@@ -1,7 +1,6 @@
 const fs = require('fs');
 const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
 
-
 class Node {
     constructor(value) {
         this.value = value;
@@ -15,10 +14,10 @@ class Queue {
         this.rear = null;
         this.length = 0;
     }
-   
+
     enqueue(value) {
         const newNode = new Node(value);
-        if(this.isEmpty()) {
+        if (this.isEmpty()) {
             this.front = this.rear = newNode;
         }
         else {
@@ -29,13 +28,13 @@ class Queue {
     }
 
     dequeue() {
-        if(this.isEmpty()) return null;
-        
+        if (this.isEmpty()) return null;
+
         const removedValue = this.front.value;
         this.front = this.front.next;
         this.length--;
 
-        if(this.isEmpty()) {
+        if (this.isEmpty()) {
             this.rear = null;
         }
         return removedValue;
@@ -46,30 +45,32 @@ class Queue {
     }
 }
 
-const [n, k] = input[0].split(' ').map(Number);
-const visited = new Array(n + 1).fill(false);
-const limit = 100001;
-const bfs = (start) => {
-    const queue = new Queue();
-    queue.enqueue([start, 0]);
+const limit = 1001;
+const n = +input;
+const visited = Array.from(Array(limit), () => new Array(limit).fill(false));
 
-    while(!queue.isEmpty()) {
-        const [x, c] = queue.dequeue();
-        visited[x] = true;
-        if(x === k) return c;  
-        if(x + 1 < limit && !visited[x + 1]) {
-            queue.enqueue([x + 1, c + 1]);
-            visited[x + 1] = true;
+const bfs = () => {
+    const queue = new Queue();
+    queue.enqueue([1, 0, 0]);
+
+    while (!queue.isEmpty()) {
+        const [s, cs, t] = queue.dequeue();
+        if (n === s) {
+            return t;
         }
-        if(x - 1 >= 0 && !visited[x - 1]) {
-            queue.enqueue([x - 1, c + 1]);
-            visited[x - 1] = true;
+        if (!visited[s][s]) {
+            queue.enqueue([s, s, t + 1]);
+            visited[s][s] = true;
         }
-        if(2 * x < limit && !visited[2 * x]) {
-            queue.enqueue([2 * x, c + 1]);
-            visited[2 * x] = true;
+        if (s + cs < limit && !visited[s + cs][cs]) {
+            queue.enqueue([s + cs, cs, t + 1]);
+            visited[s + cs][cs] = true;
+        }
+        if (s - 1 >= 1 && !visited[s - 1][cs]) {
+            queue.enqueue([s - 1, cs, t + 1]);
+            visited[s - 1][cs] = true;
         }
     }
 }
 
-console.log(bfs(n));
+console.log(bfs());

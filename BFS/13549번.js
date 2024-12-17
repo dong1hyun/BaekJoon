@@ -47,29 +47,30 @@ class Queue {
 }
 
 const [n, k] = input[0].split(' ').map(Number);
-const visited = new Array(n + 1).fill(false);
-const limit = 100001;
+const limit = 100200;
+const visited = new Array(limit).fill(0);
+let min = limit;
 const bfs = (start) => {
     const queue = new Queue();
     queue.enqueue([start, 0]);
-
+    visited[start] = true;
     while(!queue.isEmpty()) {
         const [x, c] = queue.dequeue();
-        visited[x] = true;
-        if(x === k) return c;  
-        if(x + 1 < limit && !visited[x + 1]) {
+        if(x === k) min = Math.min(min, c); 
+        if(x !== 0 && 2 * x < limit && (visited[2 * x] > c | visited[2 * x] === 0)) {
+            queue.enqueue([2 * x, c]);
+            visited[2 * x] = c;
+        }
+        if(x + 1 < limit && (visited[x + 1] > c + 1 | visited[x + 1] === 0)) {
             queue.enqueue([x + 1, c + 1]);
-            visited[x + 1] = true;
+            visited[x + 1] = c + 1;
         }
-        if(x - 1 >= 0 && !visited[x - 1]) {
+        if(x - 1 >= 0 && (visited[x - 1] > c + 1 | visited[x - 1] === 0)) {
             queue.enqueue([x - 1, c + 1]);
-            visited[x - 1] = true;
-        }
-        if(2 * x < limit && !visited[2 * x]) {
-            queue.enqueue([2 * x, c + 1]);
-            visited[2 * x] = true;
+            visited[x - 1] = c + 1;
         }
     }
 }
 
-console.log(bfs(n));
+bfs(n)
+console.log(min);
