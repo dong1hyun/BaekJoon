@@ -21,7 +21,7 @@ class MaxHeap {
     }
 
     bubbleUp() {
-        const index = this.heap.length - 1;
+        let index = this.heap.length - 1;
         while (index > 0) {
             let parentIndex = Math.floor((index - 1) / 2);
             if (this.heap[parentIndex] >= this.heap[index]) break;
