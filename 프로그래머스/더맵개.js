@@ -63,11 +63,11 @@ function solution(scoville, K) {
     }
 
     let result = 0;
-    while (heap.length) {
+    while (true) {
         let v1 = heap.extractMin();
         let v2 = heap.extractMin();
         v2 = v2 === null ? 0 : v2;
-        if (!heap.length) {
+        if (!heap.heap.length) {
             if (v1 + v2 * 2 < K) return -1;
         }
         if (v1 < K) {
